@@ -7,10 +7,10 @@ from fastapi import FastAPI
 app = FastAPI()
 
 # Define a GET endpoint at the root URL "/"
-@app.get("/")  
+@app.get("/")
 def read_api():
     # This function will run when someone visits http://127.0.0.1:8000/
-    return {"Welcome": "Tareq"}   # Returning a JSON response
+    return {"Welcome": "Tareq Aziz Justice"}   # Returning a JSON response
 
 
 # Example: Adding another route for "About"
@@ -34,16 +34,16 @@ def square_number(num: int):
     return {"Number": num, "Square": num * num}
 ```
 
-
 ### 🔑 Key Points
+
 - **`app = FastAPI()`** → Always instantiate FastAPI with parentheses.
 - **Decorators (`@app.get`)** → Define routes/endpoints.
 - **Return values** → Must be JSON-serializable (dict, list, etc.).
 - **Path parameters** → Defined inside `{}` in the route.
 - **Query parameters** → Passed in the URL after `?`.
 
-
 ### 🚀 Running the Server
+
 From your project directory:
 
 ```bash
@@ -54,8 +54,8 @@ uvicorn books:app --reload
 - `app` → The FastAPI instance inside that file.
 - `--reload` → Auto-restarts the server when you change code.
 
-
 ### 📌 Extra Tips
+
 - Visit **`http://127.0.0.1:8000/docs` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fdocs")** → Interactive Swagger UI (auto-generated API docs).
 - Visit **`http://127.0.0.1:8000/redoc` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fredoc")** → Alternative documentation view.
 - You can organize routes into separate files using **APIRouter** when your project grows.
@@ -63,6 +63,7 @@ uvicorn books:app --reload
 ---
 
 ### 🔹 Step 1: Start the Server
+
 From your project folder, run:
 
 ```bash
@@ -85,16 +86,17 @@ http://127.0.0.1:8000
 
 Here’s how you can test each route:
 
-| Endpoint | URL to Visit | What You’ll See |
-|----------|--------------|-----------------|
-| Root (`/`) | [http://127.0.0.1:8000/](http://127.0.0.1:8000/) | `{"Welcome": "Tareq"}` |
-| About (`/about`) | `http://127.0.0.1:8000/about` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fabout") | `{"About": "This is a demo FastAPI project by Tareq."}` |
-| Hello (`/hello/{name}`) | `http://127.0.0.1:8000/hello/Tareq` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fhello%2FTareq") | `{"Message": "Hello, Tareq! Welcome to FastAPI."}` |
-| Square (`/square?num=5`) | `http://127.0.0.1:8000/square?num=5` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fsquare%3Fnum%3D5") | `{"Number": 5, "Square": 25}` |
+| Endpoint                 | URL to Visit                                                                                                                                 | What You’ll See                                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Root (`/`)               | [http://127.0.0.1:8000/](http://127.0.0.1:8000/)                                                                                             | `{"Welcome": "Tareq"}`                                  |
+| About (`/about`)         | `http://127.0.0.1:8000/about` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fabout")                   | `{"About": "This is a demo FastAPI project by Tareq."}` |
+| Hello (`/hello/{name}`)  | `http://127.0.0.1:8000/hello/Tareq` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fhello%2FTareq")     | `{"Message": "Hello, Tareq! Welcome to FastAPI."}`      |
+| Square (`/square?num=5`) | `http://127.0.0.1:8000/square?num=5` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fsquare%3Fnum%3D5") | `{"Number": 5, "Square": 25}`                           |
 
 ---
 
 ### 🔹 Step 3: Use Interactive Docs
+
 FastAPI automatically generates API documentation:
 
 - **Swagger UI** → `http://127.0.0.1:8000/docs` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fdocs")  
@@ -106,6 +108,7 @@ FastAPI automatically generates API documentation:
 ---
 
 ### 🔹 Step 4: Test with `curl` (optional)
+
 If you prefer command line testing:
 
 ```bash
@@ -118,6 +121,7 @@ curl "http://127.0.0.1:8000/square?num=7"
 ---
 
 ### 🔹 Step 5: Test with Postman (optional)
+
 - Open Postman.
 - Create a new request.
 - Set method to **GET**.

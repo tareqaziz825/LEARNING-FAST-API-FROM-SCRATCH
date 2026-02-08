@@ -14,10 +14,19 @@
 
 # Import FastAPI class from the fastapi package
 from fastapi import FastAPI
+from pydantic import BaseModel, Field
+from uuid import UUID
 
 # Create an instance of the FastAPI application
 # This is the main entry point of your API
 app = FastAPI()
+
+class Book(BaseModel):
+    id: UUID
+    title: str = Field(min_length = 1)
+    author: str = Field(min_length = 1, max_length = 100)
+    description: str = Field(min_length = 1, max_length = 100)
+    rating: int = Field(gt = -1, lt = 101)
 
 # Define a GET endpoint at the root URL "/"
 @app.get("/") 
@@ -70,6 +79,13 @@ uvicorn books:app --reload
 - You can organize routes into separate files using APIRouter when your project grows.
 '''
 
-'''
+BOOKS = []
 
-'''
+@app.post("/")
+def create_book(book: Book):
+    BOOKS.append(book)
+    return book
+
+@app.get("/book")
+def about_api():
+    return BOOKS
