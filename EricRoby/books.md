@@ -80,8 +80,6 @@ This will start the server at:
 http://127.0.0.1:8000
 ```
 
----
-
 ### 🔹 Step 2: Access Endpoints in Browser
 
 Here’s how you can test each route:
@@ -93,8 +91,6 @@ Here’s how you can test each route:
 | Hello (`/hello/{name}`)  | `http://127.0.0.1:8000/hello/Tareq` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fhello%2FTareq")     | `{"Message": "Hello, Tareq! Welcome to FastAPI."}`      |
 | Square (`/square?num=5`) | `http://127.0.0.1:8000/square?num=5` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fsquare%3Fnum%3D5") | `{"Number": 5, "Square": 25}`                           |
 
----
-
 ### 🔹 Step 3: Use Interactive Docs
 
 FastAPI automatically generates API documentation:
@@ -104,8 +100,6 @@ FastAPI automatically generates API documentation:
 
 - **ReDoc** → `http://127.0.0.1:8000/redoc` [(127.0.0.1 in Bing)](https://www.bing.com/search?q="http%3A%2F%2F127.0.0.1%3A8000%2Fredoc")  
   → Clean, read-only documentation.
-
----
 
 ### 🔹 Step 4: Test with `curl` (optional)
 
@@ -118,8 +112,6 @@ curl http://127.0.0.1:8000/hello/Tareq
 curl "http://127.0.0.1:8000/square?num=7"
 ```
 
----
-
 ### 🔹 Step 5: Test with Postman (optional)
 
 - Open Postman.
@@ -127,5 +119,126 @@ curl "http://127.0.0.1:8000/square?num=7"
 - Set method to **GET**.
 - Enter the endpoint URL (e.g., `http://127.0.0.1:8000/hello/Tareq`).
 - Click **Send** → You’ll see the JSON response.
+
+---
+
+### 1. `from fastapi import FastAPI`
+
+- **Purpose:** This imports the `FastAPI` class, which is the core of your application.
+- **Usage:** You create an instance of `FastAPI()` to define your API and register routes (`@app.get`, `@app.post`, etc.).
+- **Without it:** You wouldn’t be able to start or run a FastAPI app.
+
+### 2. `from pydantic import BaseModel, Field`
+
+- **Purpose:** Pydantic is used for **data validation and serialization**.
+  - `BaseModel`: Lets you define request/response schemas (e.g., your `Book` model).
+  - `Field`: Allows you to add constraints (like `min_length`, `max_length`, `gt`, `lt`) and metadata to model attributes.
+- **Usage:** Ensures incoming JSON data matches your schema and automatically validates it.
+- **Without it:** You’d have to manually validate request data, which is error-prone and repetitive.
+
+### 3. `from uuid import UUID`
+
+- **Purpose:** Provides a standard way to represent unique identifiers.
+- **Usage:** In your `Book` model, `id: UUID` ensures each book has a globally unique ID.
+- **Without it:** You’d likely fall back to plain strings or integers, which are less reliable for uniqueness across distributed systems.
+
+### Quick Example in Context
+
+```python
+class Book(BaseModel):
+    id: UUID                                # Unique identifier
+    title: str = Field(min_length=1)        # Title must be at least 1 character
+    author: str = Field(min_length=1, max_length=100)
+    description: str = Field(min_length=1, max_length=100)
+    rating: int = Field(gt=-1, lt=101)      # Rating between 0–100
+```
+
+Here:
+
+- `FastAPI` runs the app.
+- `BaseModel` defines the schema.
+- `Field` enforces validation rules.
+- `UUID` ensures unique IDs.
+
+---
+
+### Updated Code with Auto-Generated UUIDs
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
+from uuid import UUID, uuid4   # Import uuid4 to auto-generate UUIDs
+
+# Create FastAPI app instance
+app = FastAPI()
+
+# ============================
+# Define Book model (without requiring id from client)
+# ============================
+class Book(BaseModel):
+    id: UUID = Field(default_factory=uuid4)   # Auto-generate UUID if not provided
+    title: str = Field(min_length=1)
+    author: str = Field(min_length=1, max_length=100)
+    description: str = Field(min_length=1, max_length=100)
+    rating: int = Field(gt=-1, lt=101)
+
+# ============================
+# In-memory storage
+# ============================
+BOOKS = []
+
+# ============================
+# Routes
+# ============================
+
+@app.get("/")
+def read_api():
+    """Root endpoint: returns a welcome message"""
+    return {"Welcome": "Tareq"}
+
+@app.post("/book")
+def create_book(book: Book):
+    """Creates a new book with auto-generated UUID"""
+    BOOKS.append(book)
+    return book
+
+@app.get("/book")
+def get_books():
+    """Returns all stored books"""
+    return BOOKS
+```
+
+### Key Change
+
+- `id: UUID = Field(default_factory=uuid4)`  
+  This means:
+  - If the client **doesn’t send an `id`**, FastAPI will automatically generate one using `uuid4()`.
+  - If the client **does send an `id`**, it will use that instead.
+
+---
+
+### Example Request (no `id` provided)
+
+```json
+POST /book
+{
+  "title": "Clean Code",
+  "author": "Robert C. Martin",
+  "description": "A handbook of agile software craftsmanship",
+  "rating": 95
+}
+```
+
+### Example Response (UUID auto-generated)
+
+```json
+{
+  "id": "c1a9f3d2-7f8b-4a6c-9d3e-2f5a7c8b9e1f",
+  "title": "Clean Code",
+  "author": "Robert C. Martin",
+  "description": "A handbook of agile software craftsmanship",
+  "rating": 95
+}
+```
 
 ---
