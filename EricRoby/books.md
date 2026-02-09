@@ -242,3 +242,62 @@ POST /book
 ```
 
 ---
+
+```python
+# ============================
+# Search Functionality
+# ============================
+
+@app.get("/book/search")
+def search_books(title: str | None = None, author: str | None = None):
+    """
+    Search books by title or author.
+    Example: /book/search?title=Clean Code
+             /book/search?author=Martin
+    """
+    results = BOOKS
+
+    if title:
+        results = [book for book in results if title.lower() in book.title.lower()]
+    if author:
+        results = [book for book in results if author.lower() in book.author.lower()]
+
+    if not results:
+        raise HTTPException(status_code=404, detail="No books found matching criteria")
+
+    return results
+```
+
+---
+
+### 🔑 Key Additions
+
+- **`/book/search` endpoint**
+  - Accepts optional query parameters `title` and `author`.
+  - Performs case-insensitive matching.
+  - Returns all books that match either filter.
+  - Returns `404` if no matches are found.
+
+---
+
+### Example Usage
+
+#### Search by Title
+
+```
+GET /book/search?title=Clean Code
+```
+
+#### Search by Author
+
+```
+GET /book/search?author=Martin
+```
+
+#### Search by Both
+
+```
+GET /book/search?title=Clean&author=Martin
+```
+
+---
