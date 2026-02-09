@@ -98,3 +98,5 @@ def search_books(title: str | None = None, author: str | None = None):
         raise HTTPException(status_code=404, detail="No books found matching criteria")
 
     return results
+
+# uvicorn books2:app --reload
